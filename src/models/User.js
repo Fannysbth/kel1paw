@@ -1,11 +1,13 @@
-// models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   groupName: {
     type: String,
-    required: true,
+    required: function() {
+      // wajib kalau bukan Google atau profile sudah lengkap
+      return !this.googleId || this.isIncomplete === false;
+    },
     trim: true
   },
   email: {
@@ -27,11 +29,15 @@ const userSchema = new mongoose.Schema({
   },
   department: {
     type: String,
-    required: true
+    required: function() {
+      return !this.googleId || this.isIncomplete === false;
+    }
   },
   year: {
     type: Number,
-    required: true
+    required: function() {
+      return !this.googleId || this.isIncomplete === false;
+    }
   },
   description: {
     type: String
@@ -40,37 +46,22 @@ const userSchema = new mongoose.Schema({
     type: String
   },
   members: [{
-    name: {
-      type: String,
-      required: true
-    },
-    nim: {
-      type: String,
-      required: true
-    },
-    major: {
-      type: String,
-      required: true
-    },
-    linkedinUrl: {
-      type: String
-    },
-    portfolioUrl: {
-      type: String
-    },
-    photoUrl: {
-      type: String
-    }
+    name: { type: String, required: true },
+    nim: { type: String, required: true },
+    major: { type: String, required: true },
+    linkedinUrl: { type: String },
+    portfolioUrl: { type: String },
+    photoUrl: { type: String }
   }],
-  // role: {
-  //   type: String,
-  //   enum: ['user', 'admin'],
-  //   default: 'user'
-  // }
+  isIncomplete: {
+    type: Boolean,
+    default: false
+  }
 }, {
   timestamps: true
 });
 
+// Hash password sebelum save
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
@@ -83,6 +74,7 @@ userSchema.pre('save', async function(next) {
   }
 });
 
+// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };

@@ -3,6 +3,10 @@ const Request = require('../models/Request');
 const Rating = require('../models/Rating');
 const Comment = require('../models/Comment');
 const { getRedis } = require('../config/redis');
+const { uploadToDrive } = require('../utils/driveService');
+const cloudinary = require('../config/cloudinary'); // Cloudinary config
+const fs = require('fs');
+const streamifier = require('streamifier');
 
 // ===============================
 // GET ALL PROJECTS WITH CACHE
@@ -12,22 +16,22 @@ const getProjects = async (req, res) => {
     const { page = 1, limit = 10, theme, status, search } = req.query;
     const redisClient = getRedis();
 
-    // Build query
     let query = {};
     if (theme) query.theme = theme;
     if (status) query.status = status;
     if (search) query.$text = { $search: search };
 
     const cacheKey = `projects:${JSON.stringify(query)}:page${page}:limit${limit}`;
-
-    // Try get from cache
     const cachedProjects = await redisClient.get(cacheKey);
-    if (cachedProjects) return res.json(JSON.parse(cachedProjects));
+    if (cachedProjects) {
+      const result = JSON.parse(cachedProjects);
+      result.cachedFromRedis = true;
+      return res.json(result);
+    }
 
-    // Query database
     const projects = await Project.find(query)
       .populate('ownerId', 'groupName department year teamPhotoUrl members')
-      .select('-proposalDriveLink') // jangan kirim proposal untuk umum
+      .select('-proposalDriveLink')
       .limit(Number(limit))
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
@@ -42,8 +46,8 @@ const getProjects = async (req, res) => {
     };
 
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(result));
-
     res.json(result);
+
   } catch (error) {
     console.error('Get projects error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -65,6 +69,7 @@ const getProject = async (req, res) => {
       if (!req.user || req.user.id !== project.ownerId._id.toString()) {
         delete project.proposalDriveLink;
       }
+      project.cachedFromRedis = true;
       return res.json(project);
     }
 
@@ -80,6 +85,7 @@ const getProject = async (req, res) => {
 
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(projectResponse));
     res.json(projectResponse);
+
   } catch (error) {
     console.error('Get project error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -91,9 +97,40 @@ const getProject = async (req, res) => {
 // ===============================
 const createProject = async (req, res) => {
   try {
-    const { title, summary, evaluation, suggestion, theme, projectPhotoUrl, proposalDriveLink } = req.body;
+    const { title, summary, evaluation, suggestion, theme } = req.body;
     const redisClient = getRedis();
 
+    // ===== Upload project photo ke Cloudinary =====
+    let projectPhotoUrl = null;
+    if (req.files?.projectPhoto) {
+      const file = req.files.projectPhoto[0];
+      projectPhotoUrl = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: 'project_photos' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result.secure_url);
+          }
+        );
+        streamifier.createReadStream(file.buffer).pipe(stream);
+      });
+    }
+
+    // ===== Upload proposal ke Google Drive =====
+    let proposalDriveLink = null;
+    if (req.files?.proposal) {
+      const file = req.files.proposal[0];
+      const driveData = await uploadToDrive(file.buffer, file.originalname, file.mimetype);
+
+      proposalDriveLink = {
+        fileName: file.originalname,
+        driveFileId: driveData.id,
+        viewLink: driveData.viewLink,
+        downloadLink: driveData.downloadLink,
+      };
+    }
+
+    // ===== Buat project di DB =====
     const project = await Project.create({
       title,
       summary,
@@ -102,10 +139,10 @@ const createProject = async (req, res) => {
       theme,
       projectPhotoUrl,
       proposalDriveLink,
-      ownerId: req.user.id
+      ownerId: req.user.id,
     });
 
-    // Hapus cache projects list agar update langsung terlihat
+    // ===== Clear cache Redis =====
     const keys = await redisClient.keys('projects:*');
     if (keys.length > 0) await redisClient.del(keys);
 
@@ -115,6 +152,8 @@ const createProject = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
 
 // ===============================
 // UPDATE PROJECT
@@ -127,22 +166,18 @@ const updateProject = async (req, res) => {
     const project = await Project.findById(id);
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
-    // Cek hanya pemilik project yang boleh update
     if (project.ownerId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to update this project' });
     }
 
-    const updatedProject = await Project.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
 
-    // Hapus cache project dan projects list
     await redisClient.del(`project:${id}`);
     const keys = await redisClient.keys('projects:*');
     if (keys.length > 0) await redisClient.del(keys);
 
     res.json(updatedProject);
+
   } catch (error) {
     console.error('Update project error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -174,6 +209,7 @@ const deleteProject = async (req, res) => {
     if (keys.length > 0) await redisClient.del(keys);
 
     res.json({ message: 'Project removed' });
+
   } catch (error) {
     console.error('Delete project error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -181,7 +217,7 @@ const deleteProject = async (req, res) => {
 };
 
 // ===============================
-// GET PROPOSAL LINK (OWNER OR APPROVED REQUEST)
+// GET PROPOSAL LINK
 // ===============================
 const getProposalLink = async (req, res) => {
   try {
@@ -202,6 +238,7 @@ const getProposalLink = async (req, res) => {
     if (approvedRequest) return res.json({ proposalDriveLink: project.proposalDriveLink });
 
     res.status(403).json({ message: 'You are not authorized to access the proposal' });
+
   } catch (error) {
     console.error('Get proposal link error:', error);
     res.status(500).json({ message: 'Server error' });

@@ -22,7 +22,8 @@ const requestSchema = new mongoose.Schema({
   },
   approvedAt: {
     type: Date
-  }
+  },
+  proposalLink: { type: String, default: null } 
 }, {
   timestamps: true
 });

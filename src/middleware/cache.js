@@ -1,13 +1,10 @@
-// middleware/cache.js
 const { getRedis } = require('../config/redis');
 
-
-// Middleware to check cache before processing request
 const checkCache = (key) => {
   return async (req, res, next) => {
     try {
-      const { getAsync } = getRedis();
-      const cachedData = await getAsync(key);
+      const redisClient = getRedis();
+      const cachedData = await redisClient.get(key); // langsung get(), Promise sudah
       if (cachedData) {
         return res.json(JSON.parse(cachedData));
       }

@@ -5,7 +5,8 @@ const {
   register,
   login,
   googleCallback,
-  getMe
+  getMe,
+  completeProfile 
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const { validateRegistration } = require('../middleware/validation');
@@ -25,5 +26,7 @@ router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login', session: false }),
   googleCallback
 );
+
+router.post('/complete-profile', protect, completeProfile);
 
 module.exports = router;

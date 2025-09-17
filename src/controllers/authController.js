@@ -1,4 +1,3 @@
-// controllers/authController.js
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -27,24 +26,21 @@ const register = async (req, res) => {
       email,
       password,
       department,
-      year,
-      description,
-      teamPhotoUrl,
-      members
+      year
     });
 
-    if (user) {
-      const token = generateToken(user._id);
-      
-      res.status(201).json({
-        _id: user._id,
-        groupName: user.groupName,
-        email: user.email,
-        department: user.department,
-        year: user.year,
-        token
-      });
-    }
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      message: 'User registered successfully',
+      _id: user._id,
+      groupName: user.groupName,
+      email: user.email,
+      department: user.department,
+      year: user.year,
+      token
+    });
+
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -58,19 +54,16 @@ const login = async (req, res) => {
 
     // Check for user
     const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
-    // Check if password matches
+    // Check password
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
     const token = generateToken(user._id);
-    
+
     res.json({
+      message: 'Login successful',
       _id: user._id,
       groupName: user.groupName,
       email: user.email,
@@ -78,6 +71,7 @@ const login = async (req, res) => {
       year: user.year,
       token
     });
+
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -85,17 +79,67 @@ const login = async (req, res) => {
 };
 
 // Google OAuth callback
-const googleCallback = (req, res) => {
+const googleCallback = async (req, res) => {
   try {
-    const token = generateToken(req.user._id);
-    
-    // Redirect to frontend with token
-    res.redirect(`${process.env.CLIENT_URL}/auth/success?token=${token}`);
+    const user = req.user;
+
+    // Tandai user baru yang belum lengkap
+    if (!user.groupName || !user.department || !user.year) {
+      user.isIncomplete = true;
+      await user.save();
+    }
+
+    const token = generateToken(user._id);
+
+    if (user.isIncomplete) {
+      // **Response JSON** untuk testing di Postman
+      return res.status(200).json({
+        message: 'Profile incomplete, complete via API',
+        token,
+        userId: user._id
+      });
+    }
+
+    // Login normal, return token
+    res.status(200).json({
+      message: 'Login successful via Google',
+      token,
+      userId: user._id
+    });
+
   } catch (error) {
     console.error('Google OAuth callback error:', error);
-    res.redirect(`${process.env.CLIENT_URL}/auth/error`);
+    res.status(500).json({ message: 'Server error' });
   }
 };
+
+// Complete profile (API)
+const completeProfile = async (req, res) => {
+  try {
+    const { groupName, department, year, members } = req.body; // tambahkan members
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    user.groupName = groupName;
+    user.department = department;
+    user.year = year;
+
+    if (members && Array.isArray(members) && members.length > 0) {
+      user.members = members; // simpan members baru
+    }
+
+    user.isIncomplete = false;
+
+    await user.save();
+
+    res.json({ message: 'Profile completed successfully', user });
+
+  } catch (error) {
+    console.error('Complete profile error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 // Get current user
 const getMe = async (req, res) => {
@@ -112,5 +156,6 @@ module.exports = {
   register,
   login,
   googleCallback,
-  getMe
+  getMe,
+  completeProfile
 };

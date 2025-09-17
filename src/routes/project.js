@@ -1,4 +1,4 @@
-// routes/projects.js (diperbarui)
+// routes/project.js
 const express = require('express');
 const {
   getProjects,
@@ -9,17 +9,35 @@ const {
   getProposalLink
 } = require('../controllers/projectController');
 const { protect } = require('../middleware/auth');
-const { validateProject } = require('../middleware/validation');
+const { validateProjectMultipart } = require('../middleware/validation');
+const upload = require('../middleware/upload');
+const fixMultipart = require('../middleware/fixMultipart');
 
 const router = express.Router();
 
+router.post(
+  '/',
+  protect,
+  upload.fields([
+    { name: 'projectPhoto', maxCount: 1 },
+    { name: 'proposal', maxCount: 1 }
+  ]),
+  validateProjectMultipart,
+  createProject
+);
+
+
+
+
 router.route('/')
-  .get(getProjects)
-  .post(protect, validateProject, createProject);
+  .get(getProjects);
 
 router.route('/:id')
   .get(getProject)
-  .put(protect, validateProject, updateProject)
+  .put(protect, upload.fields([
+    { name: 'projectPhoto', maxCount: 1 },
+    { name: 'proposal', maxCount: 1 }
+  ]), validateProjectMultipart, updateProject)
   .delete(protect, deleteProject);
 
 router.get('/:id/proposal', protect, getProposalLink);
