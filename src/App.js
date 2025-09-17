@@ -1,0 +1,63 @@
+// src/app.js
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const passport = require('passport');
+
+const { connectDB } = require('./config/database');
+const { connectRedis } = require('./config/redis');
+
+// Routes
+const authRoutes = require('./routes/auth');
+const projectRoutes = require('./routes/project');
+const commentRoutes = require('./routes/comments');
+const ratingRoutes = require('./routes/ratings');
+const requestRoutes = require('./routes/requests');
+const userRoutes = require('./routes/users');
+
+// Google OAuth
+require('./config/googleOAuth');
+
+const app = express();
+
+// Middleware
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000', credentials: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
+app.use(passport.initialize());
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/ratings', ratingRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/users', userRoutes);
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ message: 'Server is running!' });
+});
+
+// Main function: connect DB & Redis, then start server
+const startServer = async () => {
+  try {
+    console.log('Connecting to MongoDB...');
+    await connectDB();
+
+    console.log('Connecting to Redis...');
+    await connectRedis();
+
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  }
+};
+
+startServer();
