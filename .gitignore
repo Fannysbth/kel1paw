@@ -1,0 +1,2 @@
+# Ignore Google Drive service account JSON
+src/config/google-drive.json
