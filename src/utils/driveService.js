@@ -1,77 +1,103 @@
-// utils/driveService.js
 const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
+const streamifier = require('streamifier');
 
-// Initialize Google Drive API
+// Inisialisasi Google Drive API
 const auth = new google.auth.GoogleAuth({
-  keyFile: process.env.GOOGLE_DRIVE_KEY_FILE,
+  keyFile: process.env.GOOGLE_DRIVE_KEY_FILE, // service account JSON
   scopes: ['https://www.googleapis.com/auth/drive.file'],
 });
 
 const drive = google.drive({ version: 'v3', auth });
 
-// Upload file to Google Drive
-const uploadToDrive = async (filePath, fileName, mimeType) => {
+/**
+ * Cek apakah folder parent memperbolehkan akses publik
+ * @param {string} folderId
+ * @returns {boolean}
+ */
+const checkParentPermissions = async (folderId) => {
   try {
+    const res = await drive.permissions.list({
+      fileId: folderId,
+      supportsAllDrives: true,
+    });
+
+    return res.data.permissions.some(
+      (perm) => perm.type === 'anyone' && perm.role === 'reader'
+    );
+  } catch (err) {
+    console.error('Error checking parent folder permissions:', err);
+    return false; // default aman: anggap tidak bisa public
+  }
+};
+
+/**
+ * Upload file buffer ke Google Drive
+ * @param {Buffer} fileBuffer
+ * @param {string} fileName
+ * @param {string} mimeType
+ * @returns {object} {id, viewLink, downloadLink}
+ */
+const uploadToDrive = async (fileBuffer, fileName, mimeType) => {
+  try {
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+
     const fileMetadata = {
       name: fileName,
-      parents: [process.env.GOOGLE_DRIVE_FOLDER_ID],
+      parents: [folderId],
     };
 
     const media = {
       mimeType,
-      body: fs.createReadStream(filePath),
+      body: streamifier.createReadStream(fileBuffer),
     };
 
+    // Upload file
     const response = await drive.files.create({
       resource: fileMetadata,
       media: media,
-      fields: 'id, webViewLink, webContentLink',
+      fields: 'id',
+      supportsAllDrives: true,
     });
 
-    // Make the file publicly viewable
-    await drive.permissions.create({
-      fileId: response.data.id,
-      requestBody: {
-        role: 'reader',
-        type: 'anyone',
-      },
-    });
+    const fileId = response.data.id;
 
-    // Get the public URL
+    // Cek apakah parent folder memperbolehkan akses publik
+    const canMakePublic = await checkParentPermissions(folderId);
+
+    if (canMakePublic) {
+      try {
+        await drive.permissions.create({
+          fileId,
+          requestBody: { role: 'reader', type: 'anyone' },
+          supportsAllDrives: true,
+        });
+      } catch (err) {
+        if (err.code === 403) {
+          console.warn('Tidak bisa membuat file public karena batasan folder parent.');
+        } else {
+          throw err;
+        }
+      }
+    } else {
+      console.warn('Folder parent terbatas. File akan tetap private.');
+    }
+
+    // Ambil link file
     const result = await drive.files.get({
-      fileId: response.data.id,
+      fileId,
       fields: 'webViewLink, webContentLink',
+      supportsAllDrives: true,
     });
-
-    // Delete the local file after upload
-    fs.unlinkSync(filePath);
 
     return {
-      id: response.data.id,
+      id: fileId,
       viewLink: result.data.webViewLink,
       downloadLink: result.data.webContentLink,
     };
   } catch (error) {
     console.error('Google Drive upload error:', error);
-    throw new Error('Failed to upload file to Google Drive');
+    throw new Error('Gagal mengupload file ke Google Drive');
   }
 };
 
-// Delete file from Google Drive
-const deleteFromDrive = async (fileId) => {
-  try {
-    await drive.files.delete({
-      fileId: fileId,
-    });
-  } catch (error) {
-    console.error('Google Drive delete error:', error);
-    throw new Error('Failed to delete file from Google Drive');
-  }
-};
-
-module.exports = {
-  uploadToDrive,
-  deleteFromDrive
-};
+module.exports = { uploadToDrive };

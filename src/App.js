@@ -1,9 +1,12 @@
 // src/app.js
 require('dotenv').config();
 const express = require('express');
+const morgan = require('morgan');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
+const multer = require('multer');
+const upload = multer();
 
 const { connectDB } = require('./config/database');
 const { connectRedis } = require('./config/redis');
@@ -20,6 +23,7 @@ const userRoutes = require('./routes/users');
 require('./config/googleOAuth');
 
 const app = express();
+app.use(morgan('dev'));
 
 // Middleware
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:3000', credentials: true }));
@@ -27,6 +31,8 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 app.use(passport.initialize());
+
+
 
 // Routes
 app.use('/api/auth', authRoutes);

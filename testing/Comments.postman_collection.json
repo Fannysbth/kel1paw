@@ -1,11 +1,11 @@
 {
 	"info": {
 		"_postman_id": "a59aae3b-832c-460d-98a6-0c8ff3aff250",
-		"name": "Comments API",
+		"name": "Comments",
 		"description": "Endpoints untuk fitur komentar",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48493609",
-		"_collection_link": "https://fannyelisabethpanjaitan3003-4350311.postman.co/workspace/53ae91c8-6eee-40eb-8b3b-835068b10a81/collection/48493609-a59aae3b-832c-460d-98a6-0c8ff3aff250?action=share&source=collection_link&creator=48493609"
+		"_collection_link": "https://fannyelisabethpanjaitan3003-4350311.postman.co/workspace/Fanny-Elisabeth's-Workspace~53ae91c8-6eee-40eb-8b3b-835068b10a81/collection/48493609-a59aae3b-832c-460d-98a6-0c8ff3aff250?action=share&source=collection_link&creator=48493609"
 	},
 	"item": [
 		{
@@ -49,7 +49,7 @@
 					},
 					"status": "OK",
 					"code": 200,
-					"_postman_previewlanguage": "",
+					"_postman_previewlanguage": null,
 					"header": [
 						{
 							"key": "X-Powered-By",

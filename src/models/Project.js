@@ -1,6 +1,7 @@
 // models/Project.js
 const mongoose = require('mongoose');
 
+
 const projectSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -28,8 +29,11 @@ const projectSchema = new mongoose.Schema({
     type: String
   },
   proposalDriveLink: {
-    type: String
-  },
+  fileName: { type: String },
+  driveFileId: { type: String },
+  viewLink: { type: String },
+  downloadLink: { type: String }
+},
   ownerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

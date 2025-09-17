@@ -2,6 +2,7 @@ const Request = require('../models/Request');
 const Project = require('../models/Project');
 const User = require('../models/User');
 const { sendNotification } = require('../utils/emailService');
+const { uploadToDrive } = require('../utils/driveService'); 
 
 // Kirim request untuk melanjutkan proyek
 const sendRequest = async (req, res) => {
@@ -77,41 +78,60 @@ const getRequests = async (req, res) => {
 };
 
 // Approve request (hanya owner proyek)
+// Approve request (hanya owner proyek)
 const approveRequest = async (req, res) => {
   try {
-    const { id, requestId } = req.params; // id proyek, id request
+    const { id, requestId } = req.params;   // id project & id request
 
+    // ✅ cari project
     const project = await Project.findById(id);
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
-    // Cek ownership
-    if (project.ownerId.toString() !== req.user.id) {
+    // ✅ hanya owner
+    const userId = req.user._id || req.user.id;
+    if (project.ownerId.toString() !== userId.toString()) {
       return res.status(403).json({ message: 'Not authorized to approve requests for this project' });
     }
 
+    // ✅ cari request
     const request = await Request.findById(requestId);
     if (!request) return res.status(404).json({ message: 'Request not found' });
 
+    // set status approved
     request.approved = true;
     request.approvedAt = new Date();
+    // Tidak perlu uploadToDrive lagi
     await request.save();
 
-    // Notifikasi ke requester
+    // ambil link proposal dari project
+    const projectProposalLink = project.proposalDriveLink?.viewLink || null;
+
+    // kirim email ke requester (opsional)
     const requester = await User.findById(request.requesterId);
-    if (requester && requester.email) {
+    if (requester?.email) {
       await sendNotification(
         requester.email,
         'Your Request Has Been Approved',
-        `Your request to continue the project "${project.title}" has been approved by the owner. You can now access the proposal document.`
+        `Halo ${requester.groupName || requester.name},
+
+Request Anda untuk proyek "${project.title}" telah disetujui.
+
+Link proposal: ${projectProposalLink ?? '-'}`
       );
     }
 
-    res.json({ message: 'Request approved successfully' });
+    // ✅ kirim response
+    res.json({
+      message: 'Request approved successfully',
+      proposalLink: projectProposalLink   // 👈 dari data project
+    });
   } catch (error) {
     console.error('Approve request error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
 
 module.exports = {
   sendRequest,

@@ -4,7 +4,7 @@
 		"name": "project",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "48493609",
-		"_collection_link": "https://fannyelisabethpanjaitan3003-4350311.postman.co/workspace/53ae91c8-6eee-40eb-8b3b-835068b10a81/collection/48493609-bc970529-5d0b-4099-92b3-8fed27594eba?action=share&source=collection_link&creator=48493609"
+		"_collection_link": "https://fannyelisabethpanjaitan3003-4350311.postman.co/workspace/Fanny-Elisabeth's-Workspace~53ae91c8-6eee-40eb-8b3b-835068b10a81/collection/48493609-bc970529-5d0b-4099-92b3-8fed27594eba?action=share&source=collection_link&creator=48493609"
 	},
 	"item": [
 		{
@@ -229,9 +229,43 @@
 		},
 		{
 			"name": "Get Single Project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response has project object\", function () {\r",
+							"    pm.response.to.have.jsonBody(\"title\");\r",
+							"});\r",
+							"\r",
+							"if (pm.response.json().cachedFromRedis) {\r",
+							"    console.log(\"📌 Project retrieved from Redis cache\");\r",
+							"} else {\r",
+							"    console.log(\"📌 Project retrieved from MongoDB\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/projects/68c9832bed4456c18c090d6b",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"projects",
+						"68c9832bed4456c18c090d6b"
+					]
+				}
 			},
 			"response": [
 				{
@@ -591,9 +625,55 @@
 		},
 		{
 			"name": "Get All Projects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response has projects array\", function () {\r",
+							"    pm.response.to.have.jsonBody(\"projects\");\r",
+							"});\r",
+							"\r",
+							"// Cek header atau custom field untuk Redis\r",
+							"if (pm.response.json().cachedFromRedis) {\r",
+							"    console.log(\"📌 Data retrieved from Redis cache\");\r",
+							"} else {\r",
+							"    console.log(\"📌 Data retrieved from MongoDB\");\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/projects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"projects"
+					]
+				}
 			},
 			"response": [
 				{
