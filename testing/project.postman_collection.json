@@ -1,0 +1,668 @@
+{
+	"info": {
+		"_postman_id": "bc970529-5d0b-4099-92b3-8fed27594eba",
+		"name": "project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48493609",
+		"_collection_link": "https://fannyelisabethpanjaitan3003-4350311.postman.co/workspace/53ae91c8-6eee-40eb-8b3b-835068b10a81/collection/48493609-bc970529-5d0b-4099-92b3-8fed27594eba?action=share&source=collection_link&creator=48493609"
+	},
+	"item": [
+		{
+			"name": "Get Proposal Link (Protected)",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "project a",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzODk5MSwiZXhwIjoxNzYwNjMwOTkxfQ.3EPqVL-HSIjhWLEk-ypwEWhWYIjqpni4FbhCBGLrHQM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/projects/:id/proposal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"projects",
+								":id",
+								"proposal"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "68ca10281e5884923b950c6b"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "79"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4f-TZJOLP0G3A4uTskR6OF/arf9tPQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 01:34:59 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Update Project (Protected)",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzODk5MSwiZXhwIjoxNzYwNjMwOTkxfQ.3EPqVL-HSIjhWLEk-ypwEWhWYIjqpni4FbhCBGLrHQM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Project B Updated\",\r\n  \"description\": \"Deskripsi project B sudah diupdate\",\r\n  \"summary\": \"Ini ringkasan project B yang lengkap dan jelas.\",\r\n  \"evaluation\": \"Evaluasi project menunjukkan hasil yang baik dan rapi.\",\r\n  \"suggestion\": \"Saran untuk perbaikan project adalah menambah dokumentasi.\",\r\n  \"theme\": \"Kesehatan\"  // pastikan ini sesuai enum atau daftar theme yang valid\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/projects/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"projects",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "68c98249f7ac6f17d6d45109"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Project B",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzODk5MSwiZXhwIjoxNzYwNjMwOTkxfQ.3EPqVL-HSIjhWLEk-ypwEWhWYIjqpni4FbhCBGLrHQM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Project B Updated\",\r\n  \"description\": \"Deskripsi project B sudah diupdate\",\r\n  \"summary\": \"Ini ringkasan project B yang lengkap dan jelas.\",\r\n  \"evaluation\": \"Evaluasi project menunjukkan hasil yang baik dan rapi.\",\r\n  \"suggestion\": \"Saran untuk perbaikan project adalah menambah dokumentasi.\",\r\n  \"theme\": \"Kesehatan\"  // pastikan ini sesuai enum atau daftar theme yang valid\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/projects/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"projects",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "68c9832bed4456c18c090d6b"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "553"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"229-JH6ciYFM00USqSznZfrI68mGN6M\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 01:28:28 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68c9832bed4456c18c090d6b\",\n    \"title\": \"Project B Updated\",\n    \"summary\": \"Ini ringkasan project B yang lengkap dan jelas.\",\n    \"evaluation\": \"Evaluasi project menunjukkan hasil yang baik dan rapi.\",\n    \"suggestion\": \"Saran untuk perbaikan project adalah menambah dokumentasi.\",\n    \"theme\": \"Kesehatan\",\n    \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\n    \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\",\n    \"ownerId\": \"68c97ed2f7ac6f17d6d450f4\",\n    \"status\": \"Open\",\n    \"createdAt\": \"2025-09-16T15:32:59.150Z\",\n    \"updatedAt\": \"2025-09-17T01:28:28.136Z\",\n    \"__v\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Single Project",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "Project A",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/projects/68c9832bed4456c18c090d6b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"projects",
+								"68c9832bed4456c18c090d6b"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "734"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2de-SQ0Mognm58vsQNcEEIOEgkbO328\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 01:26:52 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68c9832bed4456c18c090d6b\",\n    \"title\": \"Project A\",\n    \"summary\": \"Ringkasan Project A\",\n    \"evaluation\": \"Evaluasi awal Project A\",\n    \"suggestion\": \"Saran untuk Project A\",\n    \"theme\": \"Smart City\",\n    \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\n    \"ownerId\": {\n        \"_id\": \"68c97ed2f7ac6f17d6d450f4\",\n        \"groupName\": \"Kelompok Hebat\",\n        \"department\": \"Teknik Informatika\",\n        \"year\": 2025,\n        \"teamPhotoUrl\": \"http://example.com/photo_new.jpg\",\n        \"members\": [\n            {\n                \"name\": \"Budi Updated\",\n                \"nim\": \"123456\",\n                \"major\": \"Informatika\",\n                \"linkedinUrl\": \"https://linkedin.com/in/budi\",\n                \"portfolioUrl\": \"http://budi.com\",\n                \"photoUrl\": \"http://example.com/budi_new.jpg\",\n                \"_id\": \"68ca0a00f09757bbef4ad7ef\"\n            }\n        ]\n    },\n    \"status\": \"Open\",\n    \"createdAt\": \"2025-09-16T15:32:59.150Z\",\n    \"updatedAt\": \"2025-09-16T15:32:59.150Z\",\n    \"__v\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete Project (Protected)",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "project b update",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzODk5MSwiZXhwIjoxNzYwNjMwOTkxfQ.3EPqVL-HSIjhWLEk-ypwEWhWYIjqpni4FbhCBGLrHQM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/projects/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"projects",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "68c9832bed4456c18c090d6b"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "29"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1d-EGvdixzyBwpeYOT0EXmInqNGDM4\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 01:31:42 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Project removed\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Project (Protected)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzNTgzMywiZXhwIjoxNzYwNjI3ODMzfQ.RBWGrg8jyH6EuyUVlj8i5IiBeI4G9sL-DLeP0HaUTsU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Project A\",\r\n  \"summary\": \"Ringkasan Project A\",\r\n  \"evaluation\": \"Evaluasi awal Project A\",\r\n  \"suggestion\": \"Saran untuk Project A\",\r\n  \"theme\": \"Smart City\",\r\n  \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\r\n  \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/projects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"projects"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "project 1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzNTgzMywiZXhwIjoxNzYwNjI3ODMzfQ.RBWGrg8jyH6EuyUVlj8i5IiBeI4G9sL-DLeP0HaUTsU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Project A\",\r\n  \"summary\": \"Ringkasan Project A\",\r\n  \"evaluation\": \"Evaluasi awal Project A\",\r\n  \"suggestion\": \"Saran untuk Project A\",\r\n  \"theme\": \"Smart City\",\r\n  \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\r\n  \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"projects"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "450"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1c2-zcxV3oyHePG/O5RJtFzPCS7ZNJg\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Sep 2025 15:32:59 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"title\": \"Project A\",\n    \"summary\": \"Ringkasan Project A\",\n    \"evaluation\": \"Evaluasi awal Project A\",\n    \"suggestion\": \"Saran untuk Project A\",\n    \"theme\": \"Smart City\",\n    \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\n    \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\",\n    \"ownerId\": \"68c97ed2f7ac6f17d6d450f4\",\n    \"status\": \"Open\",\n    \"_id\": \"68c9832bed4456c18c090d6b\",\n    \"createdAt\": \"2025-09-16T15:32:59.150Z\",\n    \"updatedAt\": \"2025-09-16T15:32:59.150Z\",\n    \"__v\": 0\n}"
+				},
+				{
+					"name": "project 2",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk4M2EzZWQ0NDU2YzE4YzA5MGQ3MyIsImlhdCI6MTc1ODAzODUyOSwiZXhwIjoxNzYwNjMwNTI5fQ.0Mc4fj7eh5XKVAheFaLjpfklOeZ_eJV6HWlOp0aEWsM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Project B\",\r\n  \"summary\": \"Sistem pengelolaan sampah berbasis IoT untuk kampus.\",\r\n  \"evaluation\": \"Proyek sebelumnya sudah diuji di lab, berhasil memonitor volume sampah secara real-time.\",\r\n  \"suggestion\": \"Perlu integrasi dengan aplikasi mobile untuk notifikasi ke petugas kebersihan.\",\r\n  \"theme\": \"Pengelolaan Sampah\",\r\n  \"projectPhotoUrl\": \"https://example.com/project_photo.jpg\",\r\n  \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"projects"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "621"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"26d-wcwgAIApDkL8qLxxlcZrR66iMZ8\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 01:03:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"title\": \"Project B\",\n    \"summary\": \"Sistem pengelolaan sampah berbasis IoT untuk kampus.\",\n    \"evaluation\": \"Proyek sebelumnya sudah diuji di lab, berhasil memonitor volume sampah secara real-time.\",\n    \"suggestion\": \"Perlu integrasi dengan aplikasi mobile untuk notifikasi ke petugas kebersihan.\",\n    \"theme\": \"Pengelolaan Sampah\",\n    \"projectPhotoUrl\": \"https://example.com/project_photo.jpg\",\n    \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\",\n    \"ownerId\": \"68c983a3ed4456c18c090d73\",\n    \"status\": \"Open\",\n    \"_id\": \"68ca08f65dd8780d1c69e68b\",\n    \"createdAt\": \"2025-09-17T01:03:50.100Z\",\n    \"updatedAt\": \"2025-09-17T01:03:50.100Z\",\n    \"__v\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Get All Projects",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "project 1",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/projects",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"projects"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1577"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"629-S5QG/vdC/AoHE5jGL8pyfv97xV8\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Sep 2025 15:33:09 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"projects\": [\n        {\n            \"_id\": \"68c9832bed4456c18c090d6b\",\n            \"title\": \"Project A\",\n            \"summary\": \"Ringkasan Project A\",\n            \"evaluation\": \"Evaluasi awal Project A\",\n            \"suggestion\": \"Saran untuk Project A\",\n            \"theme\": \"Smart City\",\n            \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\n            \"ownerId\": {\n                \"_id\": \"68c97ed2f7ac6f17d6d450f4\",\n                \"groupName\": \"Kelompok Hebat\",\n                \"department\": \"Teknik Informatika\",\n                \"year\": 2025,\n                \"teamPhotoUrl\": \"http://example.com/photo.jpg\",\n                \"members\": [\n                    {\n                        \"name\": \"Anggota Satu\",\n                        \"nim\": \"123456789\",\n                        \"major\": \"Informatika\",\n                        \"linkedinUrl\": \"https://linkedin.com/in/anggota1\",\n                        \"_id\": \"68c97ed2f7ac6f17d6d450f5\"\n                    },\n                    {\n                        \"name\": \"Anggota Dua\",\n                        \"nim\": \"987654321\",\n                        \"major\": \"Sistem Informasi\",\n                        \"_id\": \"68c97ed2f7ac6f17d6d450f6\"\n                    }\n                ]\n            },\n            \"status\": \"Open\",\n            \"createdAt\": \"2025-09-16T15:32:59.150Z\",\n            \"updatedAt\": \"2025-09-16T15:32:59.150Z\",\n            \"__v\": 0\n        },\n        {\n            \"_id\": \"68c98249f7ac6f17d6d45109\",\n            \"title\": \"Project A\",\n            \"summary\": \"Ringkasan Project A\",\n            \"evaluation\": \"Evaluasi awal Project A\",\n            \"suggestion\": \"Saran untuk Project A\",\n            \"theme\": \"Smart City\",\n            \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\n            \"ownerId\": {\n                \"_id\": \"68c97ed2f7ac6f17d6d450f4\",\n                \"groupName\": \"Kelompok Hebat\",\n                \"department\": \"Teknik Informatika\",\n                \"year\": 2025,\n                \"teamPhotoUrl\": \"http://example.com/photo.jpg\",\n                \"members\": [\n                    {\n                        \"name\": \"Anggota Satu\",\n                        \"nim\": \"123456789\",\n                        \"major\": \"Informatika\",\n                        \"linkedinUrl\": \"https://linkedin.com/in/anggota1\",\n                        \"_id\": \"68c97ed2f7ac6f17d6d450f5\"\n                    },\n                    {\n                        \"name\": \"Anggota Dua\",\n                        \"nim\": \"987654321\",\n                        \"major\": \"Sistem Informasi\",\n                        \"_id\": \"68c97ed2f7ac6f17d6d450f6\"\n                    }\n                ]\n            },\n            \"status\": \"Open\",\n            \"createdAt\": \"2025-09-16T15:29:13.449Z\",\n            \"updatedAt\": \"2025-09-16T15:29:13.449Z\",\n            \"__v\": 0\n        }\n    ],\n    \"totalPages\": 1,\n    \"currentPage\": 1,\n    \"total\": 2\n}"
+				}
+			]
+		}
+	]
+}

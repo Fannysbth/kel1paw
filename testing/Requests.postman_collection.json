@@ -1,0 +1,516 @@
+{
+	"info": {
+		"_postman_id": "7567411e-a163-4d87-b787-fc149a57bc8b",
+		"name": "Requests",
+		"description": "Collection untuk fitur Request proyek",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48493609",
+		"_collection_link": "https://fannyelisabethpanjaitan3003-4350311.postman.co/workspace/53ae91c8-6eee-40eb-8b3b-835068b10a81/collection/48493609-7567411e-a163-4d87-b787-fc149a57bc8b?action=share&source=collection_link&creator=48493609"
+	},
+	"item": [
+		{
+			"name": "Get All Requests",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"requests"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get All Requests",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"requests"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "463"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1cf-oJjUNmGYWJrLCucUD/8Zd0w4s40\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 02:06:53 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"_id\": \"68ca177f1fd810c4ed114330\",\n        \"projectId\": {\n            \"_id\": \"68ca10281e5884923b950c6b\",\n            \"title\": \"Project A\",\n            \"ownerId\": \"68c97ed2f7ac6f17d6d450f4\"\n        },\n        \"requesterId\": {\n            \"_id\": \"68c97ed2f7ac6f17d6d450f4\",\n            \"groupName\": \"Kelompok Hebat\",\n            \"department\": \"Teknik Informatika\",\n            \"year\": 2025,\n            \"teamPhotoUrl\": \"http://example.com/photo_new.jpg\"\n        },\n        \"message\": \"Saya ingin melanjutkan proyek ini\",\n        \"approved\": false,\n        \"createdAt\": \"2025-09-17T02:05:51.292Z\",\n        \"updatedAt\": \"2025-09-17T02:05:51.292Z\",\n        \"__v\": 0\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Create Request",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"message\": \"Saya ingin melanjutkan proyek ini\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/requests",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"requests"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Create Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"message\": \"Saya ingin melanjutkan proyek ini\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"requests"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "263"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"107-UhXjqftTL+xXOvTyAVvGr7/DLaA\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 02:05:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"projectId\": \"68ca10281e5884923b950c6b\",\n    \"requesterId\": \"68c97ed2f7ac6f17d6d450f4\",\n    \"message\": \"Saya ingin melanjutkan proyek ini\",\n    \"approved\": false,\n    \"_id\": \"68ca177f1fd810c4ed114330\",\n    \"createdAt\": \"2025-09-17T02:05:51.292Z\",\n    \"updatedAt\": \"2025-09-17T02:05:51.292Z\",\n    \"__v\": 0\n}"
+				},
+				{
+					"name": "req 2",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ExYTk4MWZkODEwYzRlZDExNDM0YyIsImlhdCI6MTc1ODA3NTU0NCwiZXhwIjoxNzYwNjY3NTQ0fQ.h-a42o3cnp3jF5okHKBaSoPB2DGnXN-4dVk-x13csFw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"message\": \"ini komenan ke dua\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"requests"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "248"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"f8-VpDRf5Qpm2WJgNZcyApazF3DXEY\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 02:26:00 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"projectId\": \"68ca10281e5884923b950c6b\",\n    \"requesterId\": \"68ca1a981fd810c4ed11434c\",\n    \"message\": \"ini komenan ke dua\",\n    \"approved\": false,\n    \"_id\": \"68ca1c381fd810c4ed114354\",\n    \"createdAt\": \"2025-09-17T02:26:00.733Z\",\n    \"updatedAt\": \"2025-09-17T02:26:00.733Z\",\n    \"__v\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Approve Request",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/requests/{{requestId}}/approve",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"requests",
+						"{{requestId}}",
+						"approve"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Approve Request",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/requests/{{requestId}}/approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"requests",
+								"{{requestId}}",
+								"approve"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "726"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2d6-TBd7EYZZJSgSdOrCyZYPIJJwt3I\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 02:15:11 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68ca177f1fd810c4ed114330\",\n    \"projectId\": {\n        \"_id\": \"68ca10281e5884923b950c6b\",\n        \"title\": \"Project A\",\n        \"summary\": \"Ringkasan Project A\",\n        \"evaluation\": \"Evaluasi awal Project A\",\n        \"suggestion\": \"Saran untuk Project A\",\n        \"theme\": \"Smart City\",\n        \"projectPhotoUrl\": \"https://example.com/photo.jpg\",\n        \"proposalDriveLink\": \"https://drive.google.com/file/d/abc123/view?usp=sharing\",\n        \"ownerId\": \"68c97ed2f7ac6f17d6d450f4\",\n        \"status\": \"Open\",\n        \"createdAt\": \"2025-09-17T01:34:32.829Z\",\n        \"updatedAt\": \"2025-09-17T01:34:32.829Z\",\n        \"__v\": 0\n    },\n    \"requesterId\": \"68c97ed2f7ac6f17d6d450f4\",\n    \"message\": \"Saya ingin melanjutkan proyek ini\",\n    \"approved\": true,\n    \"createdAt\": \"2025-09-17T02:05:51.292Z\",\n    \"updatedAt\": \"2025-09-17T02:15:10.332Z\",\n    \"__v\": 0,\n    \"approvedAt\": \"2025-09-17T02:15:10.288Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Delete Request",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/requests/{{requestId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"requests",
+						"{{requestId}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Delete Request",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/requests/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"requests",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "68ca1c381fd810c4ed114354"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "29"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1d-IKjPOehpohLYxsmtMPnnVy63Akg\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 02:31:43 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Request deleted\"\n}"
+				}
+			]
+		}
+	]
+}

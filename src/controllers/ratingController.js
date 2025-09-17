@@ -1,4 +1,5 @@
 // controllers/ratingController.js
+const mongoose = require('mongoose'); 
 const Rating = require('../models/Rating');
 const Project = require('../models/Project');
 
@@ -12,7 +13,7 @@ const getRatings = async (req, res) => {
     
     // Calculate average rating
     const avgRating = await Rating.aggregate([
-      { $match: { projectId: mongoose.Types.ObjectId(id) } },
+      { $match: { projectId: new mongoose.Types.ObjectId(id) } },
       { $group: { _id: null, average: { $avg: '$score' } } }
     ]);
     
@@ -72,7 +73,7 @@ const addRating = async (req, res) => {
 const updateProjectRating = async (projectId) => {
   try {
     const result = await Rating.aggregate([
-      { $match: { projectId: mongoose.Types.ObjectId(projectId) } },
+      { $match: { projectId: new mongoose.Types.ObjectId(projectId) } },
       { $group: { _id: null, average: { $avg: '$score' }, count: { $sum: 1 } } }
     ]);
     
