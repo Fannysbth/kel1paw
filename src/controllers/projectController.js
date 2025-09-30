@@ -166,9 +166,15 @@ const updateProject = async (req, res) => {
     const project = await Project.findById(id);
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
+<<<<<<< HEAD
     if (project.ownerId.toString() !== req.user._id.toString()) {
   return res.status(403).json({ message: 'Not authorized to update this project' });
 }
+=======
+    if (project.ownerId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to update this project' });
+    }
+>>>>>>> 74dcafc90e8c1ff52b1ab2674db26366f317e3cc
 
     const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
 

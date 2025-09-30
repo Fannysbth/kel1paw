@@ -153,15 +153,12 @@ if (req.body.members) {
         })
       )
     );
-
     members.forEach((m, i) => {
       if (uploads[i]) m.photoUrl = uploads[i];
     });
   }
-
   user.members = members;
 }
-
 
 
     // ===============================
