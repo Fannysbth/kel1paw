@@ -88,7 +88,6 @@ project-root/
 **Caching & Session**
 
 * Redis
-* connect-redis
 
 **Middleware & Utilitas**
 
