@@ -12,6 +12,10 @@ Portal Informasi Capstone Berkelanjutan adalah platform untuk mendukung kesinamb
 
 <img width="1339" height="933" alt="Screenshot 2025-09-30 184051" src="https://github.com/user-attachments/assets/4a37f143-d22d-4610-b7d7-1f1ea1874a2a" />
 
+## 1.3 Diagram Aplikasi Use Case Diagram
+
+<img width="1339" height="933" alt="usecaseDiagram" src="/usecaseDiagram.jpg" />
+
 ---
 
 ## 2. Nama Kelompok & Anggota
