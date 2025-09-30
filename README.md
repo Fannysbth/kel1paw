@@ -16,6 +16,10 @@ Portal Informasi Capstone Berkelanjutan adalah platform untuk mendukung kesinamb
 
 <img width="1339" height="933" alt="usecaseDiagram" src="/usecaseDiagram.jpg" />
 
+## 1.4 Diagram Aplikasi Arsitektur BackEnd
+
+<img width="1339" height="933" alt="arsitektur_Backend" src="/arsitektur_Backend.png" />
+
 ---
 
 ## 2. Nama Kelompok & Anggota
