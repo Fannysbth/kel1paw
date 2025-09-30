@@ -1,0 +1,715 @@
+{
+	"info": {
+		"_postman_id": "b2f7ee73-fb51-4808-8d91-0f1cac46c90a",
+		"name": "auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48493609",
+		"_collection_link": "https://fannyelisabethpanjaitan3003-4350311.postman.co/workspace/Fanny-Elisabeth's-Workspace~53ae91c8-6eee-40eb-8b3b-835068b10a81/collection/48493609-b2f7ee73-fb51-4808-8d91-0f1cac46c90a?action=share&source=collection_link&creator=48493609"
+	},
+	"item": [
+		{
+			"name": "Register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"groupName\": \"Kelompok Sembarangan\",\r\n  \"email\": \"sebarangan@example.com\",\r\n  \"password\": \"iniya123\",\r\n  \"department\": \"Informatika\",\r\n  \"year\": 2025,\r\n  \"description\": \"Kelompok riset AI\",\r\n  \"teamPhotoUrl\": \"http://example.com/photo.jpg\",\r\n  \"members\": [\r\n    {\r\n      \"name\": \"Budi\",\r\n      \"nim\": \"123456\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/budi\",\r\n      \"portfolioUrl\": \"http://budi.com\",\r\n      \"photoUrl\": \"http://example.com/budi.jpg\"\r\n    },\r\n    {\r\n      \"name\": \"Siti\",\r\n      \"nim\": \"654321\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/siti\",\r\n      \"portfolioUrl\": \"http://siti.com\",\r\n      \"photoUrl\": \"http://example.com/siti.jpg\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Register user 1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"groupName\": \"Kelompok Alpha\",\r\n  \"email\": \"alpha@example.com\",\r\n  \"password\": \"secret123\",\r\n  \"department\": \"Informatika\",\r\n  \"year\": 2025,\r\n  \"description\": \"Kelompok riset AI\",\r\n  \"teamPhotoUrl\": \"http://example.com/photo.jpg\",\r\n  \"members\": [\r\n    {\r\n      \"name\": \"Budi\",\r\n      \"nim\": \"123456\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/budi\",\r\n      \"portfolioUrl\": \"http://budi.com\",\r\n      \"photoUrl\": \"http://example.com/budi.jpg\"\r\n    },\r\n    {\r\n      \"name\": \"Siti\",\r\n      \"nim\": \"654321\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/siti\",\r\n      \"portfolioUrl\": \"http://siti.com\",\r\n      \"photoUrl\": \"http://example.com/siti.jpg\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "312"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"138-E+RO+gGvWgKpl51Q6eO5rD/Mfh0\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 00:27:05 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68ca0058c6e9d4d0a17248d9\",\n    \"groupName\": \"Kelompok Alpha\",\n    \"email\": \"alpha@example.com\",\n    \"department\": \"Informatika\",\n    \"year\": 2025,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2EwMDU4YzZlOWQ0ZDBhMTcyNDhkOSIsImlhdCI6MTc1ODA2ODgyNSwiZXhwIjoxNzYwNjYwODI1fQ.E2nKV8Kh2iw24WFaNTqStOVj4rknfoOG2xq6UrfkL8U\"\n}"
+				},
+				{
+					"name": "Register user",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"groupName\": \"Kelompok Sembarangan\",\r\n  \"email\": \"sebarangan@example.com\",\r\n  \"password\": \"iniya123\",\r\n  \"department\": \"Informatika\",\r\n  \"year\": 2025,\r\n  \"description\": \"Kelompok riset AI\",\r\n  \"teamPhotoUrl\": \"http://example.com/photo.jpg\",\r\n  \"members\": [\r\n    {\r\n      \"name\": \"Budi\",\r\n      \"nim\": \"123456\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/budi\",\r\n      \"portfolioUrl\": \"http://budi.com\",\r\n      \"photoUrl\": \"http://example.com/budi.jpg\"\r\n    },\r\n    {\r\n      \"name\": \"Siti\",\r\n      \"nim\": \"654321\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/siti\",\r\n      \"portfolioUrl\": \"http://siti.com\",\r\n      \"photoUrl\": \"http://example.com/siti.jpg\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "323"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"143-M56npsna71ZoixNBpe0VxUxTCws\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 02:19:04 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68ca1a981fd810c4ed11434c\",\n    \"groupName\": \"Kelompok Sembarangan\",\n    \"email\": \"sebarangan@example.com\",\n    \"department\": \"Informatika\",\n    \"year\": 2025,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2ExYTk4MWZkODEwYzRlZDExNDM0YyIsImlhdCI6MTc1ODA3NTU0NCwiZXhwIjoxNzYwNjY3NTQ0fQ.h-a42o3cnp3jF5okHKBaSoPB2DGnXN-4dVk-x13csFw\"\n}"
+				},
+				{
+					"name": "Register user fanny",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"groupName\": \"Kelompok IYA\",\r\n  \"email\": \"fanny.elisabeth17@gmail.com\",\r\n  \"password\": \"iyalohini123\",\r\n  \"department\": \"Informatika\",\r\n  \"year\": 2025,\r\n  \"description\": \"Kelompok riset AI\",\r\n  \"teamPhotoUrl\": \"http://example.com/photo.jpg\",\r\n  \"members\": [\r\n    {\r\n      \"name\": \"Budi\",\r\n      \"nim\": \"123456\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/budi\",\r\n      \"portfolioUrl\": \"http://budi.com\",\r\n      \"photoUrl\": \"http://example.com/budi.jpg\"\r\n    },\r\n    {\r\n      \"name\": \"Siti\",\r\n      \"nim\": \"654321\",\r\n      \"major\": \"Informatika\",\r\n      \"linkedinUrl\": \"https://linkedin.com/in/siti\",\r\n      \"portfolioUrl\": \"http://siti.com\",\r\n      \"photoUrl\": \"http://example.com/siti.jpg\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "361"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"169-CGjatr5BXLMFKe4rE79tLkVpU2U\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 11:17:03 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User registered successfully\",\n    \"_id\": \"68ca98ae4c5f64bfb4240dc7\",\n    \"groupName\": \"Kelompok IYA\",\n    \"email\": \"fanny.elisabeth17@gmail.com\",\n    \"department\": \"Informatika\",\n    \"year\": 2025,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Y2E5OGFlNGM1ZjY0YmZiNDI0MGRjNyIsImlhdCI6MTc1ODEwNzgyMywiZXhwIjoxNzYwNjk5ODIzfQ.qIC1WL7Nt-buoBpmv9khpUAp3zlBpScuDn2lhN7gMwE\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Login User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"kelompok@example.com\",\r\n  \"password\": \"passwordku\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Login 1",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"kelompok@example.com\",\r\n  \"password\": \"passwordku\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "322"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"142-pb6bOnCwOX+4plSwUPHnNuJ2jGQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Sep 2025 15:17:13 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68c97ed2f7ac6f17d6d450f4\",\n    \"groupName\": \"Kelompok Hebat\",\n    \"email\": \"kelompok@example.com\",\n    \"department\": \"Teknik Informatika\",\n    \"year\": 2025,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzNTgzMywiZXhwIjoxNzYwNjI3ODMzfQ.RBWGrg8jyH6EuyUVlj8i5IiBeI4G9sL-DLeP0HaUTsU\"\n}"
+				},
+				{
+					"name": "login 2",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"tim.pintar@example.com\",\r\n  \"password\": \"securePass456\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "318"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"13e-7epZq5zddnnAeXM4F95XCNgkJQc\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Sep 2025 16:02:09 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68c983a3ed4456c18c090d73\",\n    \"groupName\": \"Tim Pintar\",\n    \"email\": \"tim.pintar@example.com\",\n    \"department\": \"Sistem Informasi\",\n    \"year\": 2024,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk4M2EzZWQ0NDU2YzE4YzA5MGQ3MyIsImlhdCI6MTc1ODAzODUyOSwiZXhwIjoxNzYwNjMwNTI5fQ.0Mc4fj7eh5XKVAheFaLjpfklOeZ_eJV6HWlOp0aEWsM\"\n}"
+				},
+				{
+					"name": "login 3",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"kelompok@example.com\",\r\n  \"password\": \"passwordku\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "322"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"142-EfNY5fR5UkPSKl3nTSdiPYjgLeA\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Sep 2025 16:09:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68c97ed2f7ac6f17d6d450f4\",\n    \"groupName\": \"Kelompok Hebat\",\n    \"email\": \"kelompok@example.com\",\n    \"department\": \"Teknik Informatika\",\n    \"year\": 2025,\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzODk5MSwiZXhwIjoxNzYwNjMwOTkxfQ.3EPqVL-HSIjhWLEk-ypwEWhWYIjqpni4FbhCBGLrHQM\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Current User (Protected Route)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzNTgzMywiZXhwIjoxNzYwNjI3ODMzfQ.RBWGrg8jyH6EuyUVlj8i5IiBeI4G9sL-DLeP0HaUTsU",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/auth/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "User 1",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk3ZWQyZjdhYzZmMTdkNmQ0NTBmNCIsImlhdCI6MTc1ODAzNTgzMywiZXhwIjoxNzYwNjI3ODMzfQ.RBWGrg8jyH6EuyUVlj8i5IiBeI4G9sL-DLeP0HaUTsU",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/auth/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "667"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"29b-CohteHzcf7zVS5dzFr/4thBZKno\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Sep 2025 15:24:25 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"_id\": \"68c97ed2f7ac6f17d6d450f4\",\n    \"groupName\": \"Kelompok Hebat\",\n    \"email\": \"kelompok@example.com\",\n    \"password\": \"$2b$10$O4LoSmZji0HcNCcFIFkzB.tBHAnozvebR/fLqIT6JRR4ZuX.5/ipa\",\n    \"department\": \"Teknik Informatika\",\n    \"year\": 2025,\n    \"description\": \"Proyek keren tentang smart city\",\n    \"teamPhotoUrl\": \"http://example.com/photo.jpg\",\n    \"members\": [\n        {\n            \"name\": \"Anggota Satu\",\n            \"nim\": \"123456789\",\n            \"major\": \"Informatika\",\n            \"linkedinUrl\": \"https://linkedin.com/in/anggota1\",\n            \"_id\": \"68c97ed2f7ac6f17d6d450f5\"\n        },\n        {\n            \"name\": \"Anggota Dua\",\n            \"nim\": \"987654321\",\n            \"major\": \"Sistem Informasi\",\n            \"_id\": \"68c97ed2f7ac6f17d6d450f6\"\n        }\n    ],\n    \"role\": \"user\",\n    \"createdAt\": \"2025-09-16T15:14:26.499Z\",\n    \"updatedAt\": \"2025-09-16T15:14:26.499Z\",\n    \"__v\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:3000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "32"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"20-YN7nNTSnxtqA0v9ARtdqb4Pt6SY\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 16 Sep 2025 15:25:15 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Server is running!\"\n}"
+				}
+			]
+		}
+	]
+}
