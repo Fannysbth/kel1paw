@@ -173,5 +173,6 @@ npm test
 ## 9. Link Laporan (Google Drive)
 
 **URL GDrive (view/download link):**
+[Link Laporan Kelompok 1] (https://drive.google.com/drive/folders/1JJEDu8F6aF8g1oG9Si84WgNA_NbBZXB1?usp=sharing)
 
 ---
