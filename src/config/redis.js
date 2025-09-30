@@ -1,3 +1,4 @@
+// src/config/redis.js
 const redis = require('redis');
 
 let redisClient;

@@ -65,7 +65,69 @@ const addComment = async (req, res) => {
   }
 };
 
+// ===============================
+// UPDATE COMMENT (hanya pemilik comment)
+// ===============================
+const updateComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const { text } = req.body;
+    const redisClient = getRedis();
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+
+    // pastikan hanya pembuat comment yang bisa update
+    if (comment.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to update this comment' });
+    }
+
+    comment.text = text || comment.text;
+    await comment.save();
+    await comment.populate('userId', 'groupName');
+
+    // invalidate cache
+    await redisClient.del(`comments:project:${id}`);
+
+    res.json(comment);
+  } catch (error) {
+    console.error('Update comment error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ===============================
+// DELETE COMMENT (hanya pemilik comment)
+// ===============================
+const deleteComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const redisClient = getRedis();
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) return res.status(404).json({ message: 'Comment not found' });
+
+    // hanya pembuat comment yang bisa delete
+    if (comment.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to delete this comment' });
+    }
+
+    await comment.deleteOne();
+
+    // invalidate cache
+    await redisClient.del(`comments:project:${id}`);
+
+    res.json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error('Delete comment error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   getComments,
-  addComment
+  addComment,
+  updateComment,
+  deleteComment
 };
+

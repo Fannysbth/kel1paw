@@ -109,7 +109,40 @@ const updateProjectRating = async (projectId) => {
   }
 };
 
+// ===============================
+// DELETE RATING (hanya pemilik rating)
+// ===============================
+const deleteRating = async (req, res) => {
+  try {
+    const { id, ratingId } = req.params;
+    const redisClient = getRedis();
+
+    const rating = await Rating.findById(ratingId);
+    if (!rating) return res.status(404).json({ message: 'Rating not found' });
+
+    // hanya pemilik rating yang boleh hapus
+    if (rating.userId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized to delete this rating' });
+    }
+
+    await rating.deleteOne();
+
+    // update avg rating project setelah rating dihapus
+    await updateProjectRating(id);
+
+    // invalidate cache
+    await redisClient.del(`ratings:project:${id}`);
+
+    res.json({ message: 'Rating deleted successfully' });
+  } catch (error) {
+    console.error('Delete rating error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   getRatings,
-  addRating
+  addRating,
+  deleteRating
 };
+

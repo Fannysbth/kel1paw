@@ -120,16 +120,27 @@ const updateUser = async (req, res) => {
     }
 
     // ===============================
-    // Upload member photos (opsional)
-    // ===============================
-    if (req.body.members && req.body.members.trim() !== '') {
-  let members;
-  try {
-    members = JSON.parse(req.body.members);
-  } catch (e) {
-    return res.status(400).json({ message: 'members harus JSON valid' });
+// Upload member photos (opsional)
+// ===============================
+if (req.body.members) {
+  let members = [];
+
+  // jika members string, parse JSON
+  if (typeof req.body.members === 'string') {
+    if (req.body.members.trim() !== '') {
+      try {
+        members = JSON.parse(req.body.members);
+      } catch (e) {
+        return res.status(400).json({ message: 'members harus JSON valid' });
+      }
+    }
+  } else if (Array.isArray(req.body.members)) {
+    members = req.body.members;
+  } else {
+    return res.status(400).json({ message: 'members harus berupa array atau JSON string' });
   }
 
+  // upload foto member (opsional)
   if (req.files?.memberPhotos) {
     const uploads = await Promise.all(
       req.files.memberPhotos.map(file =>
@@ -142,12 +153,15 @@ const updateUser = async (req, res) => {
         })
       )
     );
+
     members.forEach((m, i) => {
       if (uploads[i]) m.photoUrl = uploads[i];
     });
   }
+
   user.members = members;
 }
+
 
 
     // ===============================
@@ -178,18 +192,14 @@ const updateUser = async (req, res) => {
 // ===============================
 const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    if (id !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized to delete this account' });
-    }
+    const id = req.user._id.toString(); // ambil id langsung dari token
 
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    await user.remove();
+    await User.deleteOne({ _id: id }); // hapus user
 
-    // Invalidate Redis cache
+    // invalidate Redis cache
     const redisClient = getRedis();
     await redisClient.del(`user:${id}`);
 
@@ -199,6 +209,7 @@ const deleteUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 module.exports = {
   getProfile,

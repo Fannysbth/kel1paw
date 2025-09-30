@@ -31,6 +31,14 @@ const register = async (req, res) => {
 
     const token = generateToken(user._id);
 
+    // ✅ set cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 hari
+    });
+
     res.status(201).json({
       message: 'User registered successfully',
       _id: user._id,
@@ -61,6 +69,13 @@ const login = async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
     const token = generateToken(user._id);
+
+     res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 30
+    });
 
     res.json({
       message: 'Login successful',
@@ -99,6 +114,13 @@ const googleCallback = async (req, res) => {
         userId: user._id
       });
     }
+
+     res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 hari
+    });
 
     // Login normal, return token
     res.status(200).json({

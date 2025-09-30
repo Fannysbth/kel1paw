@@ -63,7 +63,8 @@ const getRequests = async (req, res) => {
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
     // Cek ownership (hanya owner proyek)
-    if (project.ownerId.toString() !== req.user.id) {
+   const userId = req.user._id || req.user.id;
+if (project.ownerId.toString() !== userId.toString()) {
       return res.status(403).json({ message: 'Not authorized to view requests for this project' });
     }
 
@@ -131,10 +132,77 @@ Link proposal: ${projectProposalLink ?? '-'}`
   }
 };
 
+// Requester membatalkan request sendiri
+const cancelRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params; 
 
+    // cek request
+    const request = await Request.findById(requestId);
+    if (!request) return res.status(404).json({ message: 'Request not found' });
+
+    // hanya requester boleh cancel
+    const userId = req.user._id || req.user.id;
+    if (request.requesterId.toString() !== userId.toString()) {
+      return res.status(403).json({ message: 'Not authorized to cancel this request' });
+    }
+
+    await request.deleteOne();
+
+    res.json({ message: 'Request cancelled successfully' });
+  } catch (error) {
+    console.error('Cancel request error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+// Owner menolak request
+const rejectRequest = async (req, res) => {
+  try {
+    const { id, requestId } = req.params;
+
+    // cek project
+    const project = await Project.findById(id);
+    if (!project) return res.status(404).json({ message: 'Project not found' });
+
+    // hanya owner boleh reject
+    const userId = req.user._id || req.user.id;
+if (project.ownerId.toString() !== userId.toString()) {
+      return res.status(403).json({ message: 'Not authorized to reject requests for this project' });
+    }
+
+    // cek request
+    const request = await Request.findById(requestId);
+    if (!request) return res.status(404).json({ message: 'Request not found' });
+
+    // hapus
+    await request.deleteOne();
+
+    // opsional: kirim email notifikasi ke requester
+    const requester = await User.findById(request.requesterId);
+    if (requester?.email) {
+      await sendNotification(
+        requester.email,
+        'Your Request Has Been Rejected',
+        `Halo ${requester.groupName || requester.name},
+
+Request Anda untuk proyek "${project.title}" telah ditolak oleh owner.`
+      );
+    }
+
+    res.json({ message: 'Request rejected successfully' });
+  } catch (error) {
+    console.error('Reject request error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 module.exports = {
   sendRequest,
   getRequests,
-  approveRequest
+  approveRequest,
+  cancelRequest,
+  rejectRequest
 };
+

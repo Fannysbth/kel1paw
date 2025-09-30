@@ -20,7 +20,10 @@ const protect = async (req, res, next) => {
       req.user = await User.findById(decoded.id).select('-password');
       next();
     } catch (error) {
-      return res.status(401).json({ message: 'Not authorized to access this route' });
+      if (error.name === 'TokenExpiredError') {
+    return res.status(401).json({ message: 'Token expired, please login again' });
+  }
+  return res.status(401).json({ message: 'Not authorized to access this route' });
     }
   } catch (error) {
     console.error('Auth middleware error:', error);
@@ -28,12 +31,5 @@ const protect = async (req, res, next) => {
   }
 };
 
-// const admin = (req, res, next) => {
-//   if (req.user && req.user.role === 'admin') {
-//     next();
-//   } else {
-//     res.status(403).json({ message: 'Not authorized as admin' });
-//   }
-// };
 
 module.exports = { protect};
