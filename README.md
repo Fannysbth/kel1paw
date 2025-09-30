@@ -4,6 +4,13 @@
 
 Portal Informasi Capstone Berkelanjutan adalah platform untuk mendukung kesinambungan proyek capstone di lingkungan perguruan tinggi. Project Owner dapat mengunggah proyek dan dokumen pendukung; Requester dapat mencari dan mengajukan permintaan untuk melanjutkan proyek. Terdapat fitur komentar, rating, dan kategori proyek (Kesehatan, Pengelolaan Sampah, Smart City, Transportasi Ramah Lingkungan).
 
+## 1.1 Diagram Aplikasi ERD
+<img width="1339" height="612" alt="Screenshot 2025-09-30 183930" src="https://github.com/user-attachments/assets/796e4563-7726-4150-b6ce-e5a625b74628" />
+
+## 1.2 Diagram Aplikasi Activity Diagram
+<img width="1339" height="933" alt="Screenshot 2025-09-30 184051" src="https://github.com/user-attachments/assets/4a37f143-d22d-4610-b7d7-1f1ea1874a2a" />
+
+
 ---
 
 ## 2. Nama Kelompok & Anggota
