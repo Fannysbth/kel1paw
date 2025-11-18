@@ -18,7 +18,7 @@ const requestSchema = new mongoose.Schema({
   },
   approved: {
     type: Boolean,
-    default: false
+    default: null
   },
   approvedAt: {
     type: Date

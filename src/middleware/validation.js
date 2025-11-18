@@ -15,23 +15,24 @@ const handleValidationErrors = (req, res, next) => {
 
 // Validation rules for user registration
 const validateRegistration = [
-  body('groupName')
+  body('username')
     .notEmpty()
-    .withMessage('Group name is required')
+    .withMessage('Username is required')
     .isLength({ min: 2, max: 50 })
-    .withMessage('Group name must be between 2 and 50 characters'),
+    .withMessage('Username must be between 2 and 50 characters'),
+
   body('email')
     .isEmail()
     .withMessage('Please provide a valid email'),
+
+  body('phone')
+    .notEmpty()
+    .withMessage('Phone number is required'),
+
   body('password')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters long'),
-  body('department')
-    .notEmpty()
-    .withMessage('Department is required'),
-  body('year')
-    .isInt({ min: 2000, max: 2030 })
-    .withMessage('Please provide a valid year'),
+
   handleValidationErrors
 ];
 
@@ -81,27 +82,154 @@ const validateRating = [
   handleValidationErrors
 ];
 
-// middleware/validateProjectMultipart.js
+// **PERBAIKAN: Validation untuk multipart form data**
 const validateProjectMultipart = (req, res, next) => {
-  const { title, summary, evaluation, suggestion, theme } = req.body || {};
+  console.log('=== VALIDATION MIDDLEWARE START ===');
+  console.log('Request method:', req.method);
+  console.log('Content-Type:', req.headers['content-type']);
+  console.log('Request body keys:', req.body ? Object.keys(req.body) : 'null');
+  console.log('Request files keys:', req.files ? Object.keys(req.files) : 'null');
 
   const errors = [];
 
-  if (!title) errors.push({ path: 'title', msg: 'Title is required', type: 'field', location: 'body' });
-  if (!summary) errors.push({ path: 'summary', msg: 'Summary is required', type: 'field', location: 'body' });
-  if (!evaluation) errors.push({ path: 'evaluation', msg: 'Evaluation is required', type: 'field', location: 'body' });
-  if (!suggestion) errors.push({ path: 'suggestion', msg: 'Suggestion is required', type: 'field', location: 'body' });
-  
-  const validThemes = ['Kesehatan', 'Pengelolaan Sampah', 'Smart City', 'Transportasi Ramah Lingkungan'];
-  if (!theme || !validThemes.includes(theme)) errors.push({ path: 'theme', msg: 'Please select a valid theme', type: 'field', location: 'body' });
+  try {
+    // **PERBAIKAN: Check if req.body exists**
+    if (!req.body || typeof req.body !== 'object') {
+      console.error('req.body is null or not an object:', req.body);
+      return res.status(400).json({ 
+        message: 'Invalid request body',
+        error: 'Request body is missing or malformed'
+      });
+    }
 
-  if (errors.length > 0) return res.status(400).json({ message: 'Validation failed', errors });
+    // **Helper function untuk memproses field dari FormData**
+    const getFieldValue = (fieldName) => {
+      try {
+        if (!req.body[fieldName]) return null;
+        
+        const value = req.body[fieldName];
+        
+        // Jika array (dari FormData), ambil elemen pertama
+        if (Array.isArray(value)) {
+          const firstValue = value[0];
+          if (firstValue === null || firstValue === undefined) return null;
+          return firstValue.toString().trim() || null;
+        }
+        
+        // Jika string biasa
+        if (typeof value === 'string') {
+          return value.trim() || null;
+        }
+        
+        // Jika number atau boolean, convert ke string
+        if (typeof value === 'number' || typeof value === 'boolean') {
+          return value.toString();
+        }
+        
+        return null;
+      } catch (err) {
+        console.error(`Error processing field ${fieldName}:`, err);
+        return null;
+      }
+    };
 
+    // Extract dan normalize semua field
+    const title = getFieldValue('title');
+    const summary = getFieldValue('summary');
+    const evaluation = getFieldValue('evaluation');
+    const suggestion = getFieldValue('suggestion');
+    const theme = getFieldValue('theme');
+
+    console.log('Extracted values:', { title, summary, evaluation, suggestion, theme });
+
+    // Update req.body dengan values yang sudah dinormalisasi
+    req.body.title = title;
+    req.body.summary = summary;
+    req.body.evaluation = evaluation;
+    req.body.suggestion = suggestion;
+    req.body.theme = theme;
+
+    // Validasi field required
+    if (!title) {
+      errors.push('Judul proyek harus diisi');
+    } else if (title.length < 2) {
+      errors.push('Judul proyek minimal 2 karakter');
+    } else if (title.length > 100) {
+      errors.push('Judul proyek maksimal 100 karakter');
+    }
+
+    if (!summary) {
+      errors.push('Ringkasan proyek harus diisi');
+    } else if (summary.length < 10) {
+      errors.push('Ringkasan proyek minimal 10 karakter');
+    } else if (summary.length > 500) {
+      errors.push('Ringkasan proyek maksimal 500 karakter');
+    }
+
+    if (!evaluation) {
+      errors.push('Evaluasi proyek harus diisi');
+    } else if (evaluation.length < 10) {
+      errors.push('Evaluasi proyek minimal 10 karakter');
+    }
+
+    if (!suggestion) {
+      errors.push('Saran pengembangan harus diisi');
+    } else if (suggestion.length < 10) {
+      errors.push('Saran pengembangan minimal 10 karakter');
+    }
+
+    const validThemes = [
+      'Kesehatan', 
+      'Pengelolaan Sampah', 
+      'Smart City', 
+      'Transportasi Ramah Lingkungan'
+    ];
+    
+    if (!theme || !validThemes.includes(theme)) {
+      errors.push('Kategori proyek harus dipilih dari opsi yang tersedia');
+    }
+
+    // Validasi file upload untuk POST (create)
+    if (req.method === 'POST') {
+      if (!req.files?.projectPhotos || req.files.projectPhotos.length === 0) {
+        errors.push('Foto proyek harus diupload (minimal 1 foto)');
+      } else if (req.files.projectPhotos.length > 5) {
+        errors.push('Maksimal 5 foto proyek');
+      }
+
+      if (!req.files?.proposal || req.files.proposal.length === 0) {
+        errors.push('Proposal (PDF) harus diupload');
+      }
+    }
+
+    // Validasi file upload untuk PUT (update) - opsional
+    if (req.method === 'PUT') {
+      if (req.files?.projectPhotos && req.files.projectPhotos.length > 5) {
+        errors.push('Maksimal 5 foto proyek');
+      }
+    }
+
+  } catch (error) {
+    console.error('Error in validation middleware:', error);
+    return res.status(500).json({ 
+      error: 'Terjadi kesalahan dalam validasi data',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+
+  console.log('Validation errors:', errors);
+
+  if (errors.length > 0) {
+    console.log('=== VALIDATION FAILED ===');
+    return res.status(400).json({ 
+      message: 'Validasi gagal', 
+      errors 
+    });
+  }
+
+  console.log('=== VALIDATION PASSED ===');
   next();
 };
-
-
-
 
 module.exports = {
   validateRegistration,

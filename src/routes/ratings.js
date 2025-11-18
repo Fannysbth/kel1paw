@@ -10,10 +10,10 @@ const { validateRating } = require('../middleware/validation');
 const router = express.Router();
 
 // DELETE harus ditaruh dulu
-router.delete('/:id/:ratingId', protect, deleteRating);
+router.delete('/:projectId/:ratingId', protect, deleteRating);
 
 // GET & POST rating
-router.route('/:id')
+router.route('/:projectId')
   .get(getRatings)
   .post(protect, validateRating, addRating);
 

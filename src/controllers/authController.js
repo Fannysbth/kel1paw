@@ -12,7 +12,7 @@ const generateToken = (id) => {
 // Register kelompok
 const register = async (req, res) => {
   try {
-    const { groupName, email, password, department, year, description, teamPhotoUrl, members } = req.body;
+    const { username, email, phone, password } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -20,38 +20,43 @@ const register = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Create user (kelompok)
+    // Create user with minimal data
     const user = await User.create({
-      groupName,
+      groupName: username, // Map username to groupName
       email,
       password,
-      department,
-      year
+      phone, // Store phone number
+      isIncomplete: true // Mark as incomplete profile
     });
 
     const token = generateToken(user._id);
 
-    // ✅ set cookie
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 hari
+      maxAge: 1000 * 60 * 60 * 24 * 30
     });
 
     res.status(201).json({
-      message: 'User registered successfully',
-      _id: user._id,
-      groupName: user.groupName,
-      email: user.email,
-      department: user.department,
-      year: user.year,
+      success: true,
+      message: 'User registered successfully. ',
+      user: {
+        _id: user._id,
+        groupName: user.groupName,
+        email: user.email,
+        phone: user.phone,
+        isIncomplete: user.isIncomplete
+      },
       token
     });
 
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error' 
+    });
   }
 };
 
@@ -70,7 +75,7 @@ const login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-     res.cookie('token', token, {
+    res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -78,14 +83,21 @@ const login = async (req, res) => {
     });
 
     res.json({
-      message: 'Login successful',
-      _id: user._id,
-      groupName: user.groupName,
-      email: user.email,
-      department: user.department,
-      year: user.year,
-      token
-    });
+  success: true,
+  message: 'Login successful',
+  user: {
+    _id: user._id,
+    groupName: user.groupName,
+    email: user.email,
+    phone: user.phone,
+    department: user.department,
+    year: user.year,
+    description: user.description,
+    isIncomplete: user.isIncomplete
+  },
+  token
+});
+
 
   } catch (error) {
     console.error('Login error:', error);
@@ -138,30 +150,50 @@ const googleCallback = async (req, res) => {
 // Complete profile (API)
 const completeProfile = async (req, res) => {
   try {
-    const { groupName, department, year, members } = req.body; // tambahkan members
+    const { groupName, department, year, description, teamPhotoUrl, members } = req.body;
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    user.groupName = groupName;
+    user.groupName = groupName || user.groupName;
     user.department = department;
     user.year = year;
-
-    if (members && Array.isArray(members) && members.length > 0) {
-      user.members = members; // simpan members baru
-    }
-
+    user.description = description;
+    user.teamPhotoUrl = teamPhotoUrl;
+    user.members = members || [];
     user.isIncomplete = false;
 
     await user.save();
 
-    res.json({ message: 'Profile completed successfully', user });
+    res.json({ 
+      success: true,
+      message: 'Profile completed successfully', 
+      user 
+    });
 
   } catch (error) {
     console.error('Complete profile error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error' 
+    });
   }
 };
 
+// Logout user
+const logout = async (req, res) => {
+  try {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
+
+    res.json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 // Get current user
 const getMe = async (req, res) => {
@@ -179,5 +211,6 @@ module.exports = {
   login,
   googleCallback,
   getMe,
-  completeProfile
+  completeProfile,
+  logout
 };

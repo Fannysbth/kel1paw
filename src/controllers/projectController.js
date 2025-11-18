@@ -8,6 +8,81 @@ const cloudinary = require('../config/cloudinary'); // Cloudinary config
 const fs = require('fs');
 const streamifier = require('streamifier');
 
+// controllers/projectController.js - Tambahkan function ini
+
+// Tambahkan di projectController.js
+
+// ===============================
+// CHECK USER PROJECT LIMIT
+// ===============================
+const checkUserProjectLimit = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    const userProjectCount = await Project.countDocuments({ ownerId: userId });
+    const canCreateProject = userProjectCount === 0;
+
+    res.json({
+      canCreateProject,
+      currentProjectCount: userProjectCount,
+      maxProjects: 1
+    });
+
+  } catch (error) {
+    console.error('Check project limit error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ===============================
+// GET USER'S PROJECTS - PERBAIKAN
+// ===============================
+const getUserProjects = async (req, res) => {
+  try {
+    const userId = req.user.id; // atau req.user._id tergantung struktur user
+    console.log('Fetching projects for user:', userId);
+    
+    const redisClient = getRedis();
+    const cacheKey = `user_projects:${userId}`;
+
+    // Coba dari cache dulu
+    const cachedProjects = await redisClient.get(cacheKey);
+    if (cachedProjects) {
+      console.log('Cache HIT for user projects');
+      const result = JSON.parse(cachedProjects);
+      return res.json(result);
+    }
+
+    // Query dari database
+    const projects = await Project.find({ ownerId: userId })
+      .populate('ownerId', 'groupName department year teamPhotoUrl members')
+      .select('-proposalDriveLink') // sembunyikan proposal link
+      .sort({ createdAt: -1 })
+      .lean(); // gunakan lean() untuk performance
+
+    console.log(`Found ${projects.length} projects for user ${userId}`);
+
+    // **PERBAIKAN: Kembalikan array projects langsung**
+    const result = {
+      projects: projects,
+      total: projects.length,
+      hasProjects: projects.length > 0
+    };
+
+    // Cache hasilnya
+    await redisClient.setEx(cacheKey, 1800, JSON.stringify(result));
+    
+    res.json(result);
+
+  } catch (error) {
+    console.error('Get user projects error:', error);
+    res.status(500).json({ 
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
 // ===============================
 // GET ALL PROJECTS WITH CACHE
 // ===============================
@@ -67,7 +142,6 @@ const getProject = async (req, res) => {
     if (cachedProject) {
       const project = JSON.parse(cachedProject);
       if (!req.user || req.user.id !== project.ownerId._id.toString()) {
-        delete project.proposalDriveLink;
       }
       project.cachedFromRedis = true;
       return res.json(project);
@@ -80,7 +154,7 @@ const getProject = async (req, res) => {
 
     const projectResponse = project.toObject();
     if (!req.user || req.user.id !== project.ownerId._id.toString()) {
-      delete projectResponse.proposalDriveLink;
+
     }
 
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(projectResponse));
@@ -95,63 +169,142 @@ const getProject = async (req, res) => {
 // ===============================
 // CREATE PROJECT
 // ===============================
+// controllers/projectController.js - Perbaiki createProject
 const createProject = async (req, res) => {
   try {
+    console.log('=== CREATE PROJECT START ===');
+    console.log('User ID:', req.user.id);
+    console.log('Request body:', req.body);
+    console.log('Request files:', req.files);
+
+    // Pastikan field sudah diproses dengan benar
     const { title, summary, evaluation, suggestion, theme } = req.body;
+
     const redisClient = getRedis();
 
-    // ===== Upload project photo ke Cloudinary =====
-    let projectPhotoUrl = null;
-    if (req.files?.projectPhoto) {
-      const file = req.files.projectPhoto[0];
-      projectPhotoUrl = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: 'project_photos' },
-          (error, result) => {
-            if (error) return reject(error);
-            resolve(result.secure_url);
-          }
-        );
-        streamifier.createReadStream(file.buffer).pipe(stream);
+    // Cek apakah user sudah memiliki proyek
+    const existingProject = await Project.findOne({ ownerId: req.user.id });
+    if (existingProject) {
+      console.log('User already has project:', existingProject._id);
+      return res.status(400).json({ 
+        message: 'Anda sudah memiliki proyek. Setiap user hanya dapat memiliki 1 proyek.' 
       });
+    }
+
+    // ===== Upload project photos ke Cloudinary =====
+    let projectPhotoUrls = [];
+    if (req.files?.projectPhotos) {
+      console.log(`Uploading ${req.files.projectPhotos.length} project photos...`);
+      
+      for (const file of req.files.projectPhotos) {
+        try {
+          console.log(`Uploading project photo: ${file.originalname}`);
+          const url = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+              { 
+                folder: 'project_photos',
+                resource_type: 'image',
+                format: 'jpg',
+                quality: 'auto'
+              },
+              (error, result) => {
+                if (error) {
+                  console.error('Cloudinary upload error:', error);
+                  return reject(error);
+                }
+                console.log('Cloudinary upload success:', result.secure_url);
+                resolve(result.secure_url);
+              }
+            );
+            
+            streamifier.createReadStream(file.buffer).pipe(uploadStream);
+          });
+          projectPhotoUrls.push(url);
+        } catch (uploadError) {
+          console.error('Error uploading project photo:', uploadError);
+          return res.status(500).json({ 
+            message: `Gagal mengupload foto: ${file.originalname}` 
+          });
+        }
+      }
     }
 
     // ===== Upload proposal ke Google Drive =====
     let proposalDriveLink = null;
     if (req.files?.proposal) {
       const file = req.files.proposal[0];
-      const driveData = await uploadToDrive(file.buffer, file.originalname, file.mimetype);
-
-      proposalDriveLink = {
-        fileName: file.originalname,
-        driveFileId: driveData.id,
-        viewLink: driveData.viewLink,
-        downloadLink: driveData.downloadLink,
-      };
+      try {
+        console.log(`Uploading proposal: ${file.originalname}`);
+        const driveData = await uploadToDrive(file.buffer, file.originalname, file.mimetype);
+        
+        proposalDriveLink = {
+          fileName: file.originalname,
+          driveFileId: driveData.id,
+          viewLink: driveData.viewLink,
+          downloadLink: driveData.downloadLink,
+        };
+        console.log('Proposal upload success:', proposalDriveLink);
+      } catch (driveError) {
+        console.error('Error uploading proposal:', driveError);
+        return res.status(500).json({ 
+          message: 'Gagal mengupload proposal ke Google Drive' 
+        });
+      }
     }
 
     // ===== Buat project di DB =====
+    console.log('Creating project in database...');
     const project = await Project.create({
-      title,
-      summary,
-      evaluation,
-      suggestion,
-      theme,
-      projectPhotoUrl,
+      title: title,
+      summary: summary,
+      evaluation: evaluation,
+      suggestion: suggestion,
+      theme: theme,
+      projectPhotoUrls,
       proposalDriveLink,
       ownerId: req.user.id,
     });
 
-    // ===== Clear cache Redis =====
-    const keys = await redisClient.keys('projects:*');
-    if (keys.length > 0) await redisClient.del(keys);
+    console.log('Project created successfully:', project._id);
 
-    res.status(201).json(project);
+    // ===== Clear cache Redis =====
+    try {
+      const keys = await redisClient.keys('projects:*');
+      const userKeys = await redisClient.keys('user_projects:*');
+      if (keys.length > 0) await redisClient.del(keys);
+      if (userKeys.length > 0) await redisClient.del(userKeys);
+      console.log('Cache cleared');
+    } catch (cacheError) {
+      console.error('Error clearing cache:', cacheError);
+    }
+
+    console.log('=== CREATE PROJECT SUCCESS ===');
+    res.status(201).json({
+      message: 'Proyek berhasil dibuat',
+      project
+    });
+    
   } catch (error) {
-    console.error('Create project error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('=== CREATE PROJECT ERROR ===');
+    console.error('Error details:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        message: 'Data tidak valid',
+        errors 
+      });
+    }
+
+    res.status(500).json({ 
+      message: 'Terjadi kesalahan server saat membuat proyek',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
+
+
 
 
 
@@ -251,5 +404,7 @@ module.exports = {
   createProject,
   updateProject,
   deleteProject,
-  getProposalLink
+  getProposalLink,
+  checkUserProjectLimit,
+  getUserProjects
 };

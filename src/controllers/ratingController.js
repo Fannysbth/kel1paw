@@ -1,4 +1,3 @@
-// controllers/ratingController.js
 const mongoose = require('mongoose'); 
 const Rating = require('../models/Rating');
 const Project = require('../models/Project');
@@ -9,32 +8,31 @@ const { getRedis } = require('../config/redis');
 // ===============================
 const getRatings = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { projectId } = req.params;
     const redisClient = getRedis();
-    const cacheKey = `ratings:project:${id}`;
+    const cacheKey = `ratings:project:${projectId}`;
 
-    // Cek cache
+    // Check cache
     const cachedRatings = await redisClient.get(cacheKey);
     if (cachedRatings) {
-      const data = JSON.parse(cachedRatings);
-      data.cachedFromRedis = true; // tanda bahwa data dari cache
-      return res.json(data);
+      return res.json(JSON.parse(cachedRatings));
     }
 
-    const ratings = await Rating.find({ projectId: id })
-      .populate('userId', 'groupName');
+    const ratings = await Rating.find({ projectId })
+      .populate('userId', '_id groupName');
 
     const avgRating = await Rating.aggregate([
-      { $match: { projectId: new mongoose.Types.ObjectId(id) } },
+      { $match: { projectId: new mongoose.Types.ObjectId(projectId) } },
       { $group: { _id: null, average: { $avg: '$score' } } }
     ]);
 
     const result = {
       ratings,
-      average: avgRating.length > 0 ? avgRating[0].average : 0
+      average: avgRating.length > 0 ? avgRating[0].average : 0,
+      count: ratings.length
     };
 
-    // Set cache selama 1 jam
+    // Save cache 1 hour
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(result));
 
     res.json(result);
@@ -49,17 +47,17 @@ const getRatings = async (req, res) => {
 // ===============================
 const addRating = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { projectId } = req.params;
     const { score } = req.body;
     const redisClient = getRedis();
 
     // Check project exists
-    const project = await Project.findById(id);
+    const project = await Project.findById(projectId);
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
     // Check existing rating
     const existingRating = await Rating.findOne({
-      projectId: id,
+      projectId,
       userId: req.user.id
     });
 
@@ -69,17 +67,17 @@ const addRating = async (req, res) => {
       rating = await existingRating.save();
     } else {
       rating = await Rating.create({
-        projectId: id,
+        projectId,
         userId: req.user.id,
         score
       });
     }
 
-    // Update avg rating di project
-    await updateProjectRating(id);
+    // Update avg rating
+    await updateProjectRating(projectId);
 
-    // Hapus cache rating proyek karena ada perubahan
-    await redisClient.del(`ratings:project:${id}`);
+    // Delete cache
+    await redisClient.del(`ratings:project:${projectId}`);
 
     res.status(201).json(rating);
   } catch (error) {
@@ -89,7 +87,7 @@ const addRating = async (req, res) => {
 };
 
 // ===============================
-// HELPER: UPDATE PROJECT AVG RATING
+// UPDATE AVG RATING IN PROJECT
 // ===============================
 const updateProjectRating = async (projectId) => {
   try {
@@ -110,28 +108,24 @@ const updateProjectRating = async (projectId) => {
 };
 
 // ===============================
-// DELETE RATING (hanya pemilik rating)
+// DELETE RATING
 // ===============================
 const deleteRating = async (req, res) => {
   try {
-    const { id, ratingId } = req.params;
+    const { projectId, ratingId } = req.params;
     const redisClient = getRedis();
 
     const rating = await Rating.findById(ratingId);
     if (!rating) return res.status(404).json({ message: 'Rating not found' });
 
-    // hanya pemilik rating yang boleh hapus
     if (rating.userId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to delete this rating' });
     }
 
     await rating.deleteOne();
 
-    // update avg rating project setelah rating dihapus
-    await updateProjectRating(id);
-
-    // invalidate cache
-    await redisClient.del(`ratings:project:${id}`);
+    await updateProjectRating(projectId);
+    await redisClient.del(`ratings:project:${projectId}`);
 
     res.json({ message: 'Rating deleted successfully' });
   } catch (error) {
@@ -145,4 +139,3 @@ module.exports = {
   addRating,
   deleteRating
 };
-

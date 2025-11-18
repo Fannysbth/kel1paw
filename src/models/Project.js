@@ -25,9 +25,12 @@ const projectSchema = new mongoose.Schema({
     required: true,
     enum: ['Kesehatan', 'Pengelolaan Sampah', 'Smart City', 'Transportasi Ramah Lingkungan']
   },
-  projectPhotoUrl: {
+  projectPhotoUrls: [
+  {
     type: String
-  },
+  }
+],
+
   proposalDriveLink: {
   fileName: { type: String },
   driveFileId: { type: String },
@@ -41,8 +44,16 @@ const projectSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Open', 'In Progress', 'Closed'],
+    enum: ['Open',  'Closed'],
     default: 'Open'
+  },
+  avgRating: {
+    type: Number,
+    default: 0
+  },
+  ratingCount: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

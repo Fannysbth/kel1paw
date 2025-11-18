@@ -4,10 +4,6 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   groupName: {
     type: String,
-    required: function() {
-      // wajib kalau bukan Google atau profile sudah lengkap
-      return !this.googleId || this.isIncomplete === false;
-    },
     trim: true
   },
   email: {
@@ -27,17 +23,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     sparse: true
   },
-  department: {
+  phone: {
     type: String,
-    required: function() {
-      return !this.googleId || this.isIncomplete === false;
-    }
+    sparse: true
+  },
+  department: {
+    type: String
   },
   year: {
-    type: Number,
-    required: function() {
-      return !this.googleId || this.isIncomplete === false;
-    }
+    type: Number
   },
   description: {
     type: String
@@ -46,16 +40,16 @@ const userSchema = new mongoose.Schema({
     type: String
   },
   members: [{
-    name: { type: String, required: true },
-    nim: { type: String, required: true },
-    major: { type: String, required: true },
+    name: { type: String },
+    nim: { type: String },
+    major: { type: String },
     linkedinUrl: { type: String },
     portfolioUrl: { type: String },
     photoUrl: { type: String }
   }],
   isIncomplete: {
     type: Boolean,
-    default: false
+    default: true
   }
 }, {
   timestamps: true

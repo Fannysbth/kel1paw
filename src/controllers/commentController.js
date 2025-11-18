@@ -7,27 +7,42 @@ const { getRedis } = require('../config/redis');
 // ===============================
 const getComments = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { projectId } = req.params;
     const redisClient = getRedis();
-    const cacheKey = `comments:project:${id}`;
+    const cacheKey = `comments:project:${projectId}`;
 
-    // Cek cache dulu
+    // Check cache
     const cachedComments = await redisClient.get(cacheKey);
     if (cachedComments) {
-      const comments = JSON.parse(cachedComments);
-      // tandai kalau data dari Redis
-      return res.json({ comments, cachedFromRedis: true });
+      return res.json(JSON.parse(cachedComments));
     }
 
-    // Ambil dari MongoDB
-    const comments = await Comment.find({ projectId: id })
-      .populate('userId', 'groupName')
+    // Ambil komentar parent
+    const comments = await Comment.find({
+      projectId: projectId,
+      parentId: null
+    })
+      .populate('userId', '_id groupName')
       .sort({ createdAt: -1 });
 
-    // Simpan ke Redis selama 1 jam
-    await redisClient.setEx(cacheKey, 3600, JSON.stringify(comments));
+    // Ambil reply per comment
+    const commentsWithReplies = await Promise.all(
+      comments.map(async (comment) => {
+        const replies = await Comment.find({ parentId: comment._id })
+          .populate('userId', '_id groupName')
+          .sort({ createdAt: 1 });
 
-    res.json(comments);
+        return {
+          ...comment.toObject(),
+          replies
+        };
+      })
+    );
+
+    // Save to cache
+    await redisClient.setEx(cacheKey, 3600, JSON.stringify(commentsWithReplies));
+
+    res.json(commentsWithReplies);
   } catch (error) {
     console.error('Get comments error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -35,28 +50,28 @@ const getComments = async (req, res) => {
 };
 
 // ===============================
-// ADD COMMENT (invalidate cache)
+// ADD COMMENT
 // ===============================
 const addComment = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { projectId } = req.params;
     const { text } = req.body;
     const redisClient = getRedis();
 
-    // Cek project exist
-    const project = await Project.findById(id);
+    // Check project exist
+    const project = await Project.findById(projectId);
     if (!project) return res.status(404).json({ message: 'Project not found' });
 
     const comment = await Comment.create({
-      projectId: id,
+      projectId,
       userId: req.user.id,
       text
     });
 
     await comment.populate('userId', 'groupName');
 
-    // Hapus cache comments proyek ini supaya update terlihat
-    await redisClient.del(`comments:project:${id}`);
+    // Delete cache
+    await redisClient.del(`comments:project:${projectId}`);
 
     res.status(201).json(comment);
   } catch (error) {
@@ -66,18 +81,18 @@ const addComment = async (req, res) => {
 };
 
 // ===============================
-// UPDATE COMMENT (hanya pemilik comment)
+// UPDATE COMMENT
 // ===============================
 const updateComment = async (req, res) => {
   try {
-    const { id, commentId } = req.params;
+    const { projectId, commentId } = req.params;
     const { text } = req.body;
     const redisClient = getRedis();
 
     const comment = await Comment.findById(commentId);
     if (!comment) return res.status(404).json({ message: 'Comment not found' });
 
-    // pastikan hanya pembuat comment yang bisa update
+    // only owner can edit
     if (comment.userId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to update this comment' });
     }
@@ -87,7 +102,7 @@ const updateComment = async (req, res) => {
     await comment.populate('userId', 'groupName');
 
     // invalidate cache
-    await redisClient.del(`comments:project:${id}`);
+    await redisClient.del(`comments:project:${projectId}`);
 
     res.json(comment);
   } catch (error) {
@@ -97,25 +112,25 @@ const updateComment = async (req, res) => {
 };
 
 // ===============================
-// DELETE COMMENT (hanya pemilik comment)
+// DELETE COMMENT
 // ===============================
 const deleteComment = async (req, res) => {
   try {
-    const { id, commentId } = req.params;
+    const { projectId, commentId } = req.params;
     const redisClient = getRedis();
 
     const comment = await Comment.findById(commentId);
     if (!comment) return res.status(404).json({ message: 'Comment not found' });
 
-    // hanya pembuat comment yang bisa delete
+    // Only owner can delete
     if (comment.userId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to delete this comment' });
     }
 
     await comment.deleteOne();
 
-    // invalidate cache
-    await redisClient.del(`comments:project:${id}`);
+    // Invalidate cache
+    await redisClient.del(`comments:project:${projectId}`);
 
     res.json({ message: 'Comment deleted successfully' });
   } catch (error) {
@@ -130,4 +145,3 @@ module.exports = {
   updateComment,
   deleteComment
 };
-

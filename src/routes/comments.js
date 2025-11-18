@@ -10,12 +10,12 @@ const { validateComment } = require('../middleware/validation');
 
 const router = express.Router();
 
-router.route('/:id')
+router.route('/:projectId')
   .get(getComments) // get all comments for project
   .post(protect, validateComment, addComment); // add comment
 
 // update & delete comment tertentu
-router.route('/:id/:commentId')
+router.route('/:projectId/:commentId')
   .put(protect, validateComment, updateComment)
   .delete(protect, deleteComment);
 
