@@ -7,12 +7,12 @@ const stream = require('stream');
  */
 const getDriveClient = () => {
   try {
-    if (!process.env.GOOGLE_DRIVE_KEY_FILE) {
+    if (!JSON.parse(process.env.GOOGLE_DRIVE_JSON)) {
       throw new Error("GOOGLE_DRIVE_KEY_FILE not configured in .env");
     }
 
     const auth = new google.auth.GoogleAuth({
-      keyFile: process.env.GOOGLE_DRIVE_KEY_FILE,
+      keyFile: JSON.parse(process.env.GOOGLE_DRIVE_JSON),
       scopes: ["https://www.googleapis.com/auth/drive"],
 
     });
